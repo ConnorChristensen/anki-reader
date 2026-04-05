@@ -1,152 +1,144 @@
-import { type SqlValue } from 'sql.js';
-import { type AnkiCollection } from './AnkiCollection';
-import { type Model } from './Model';
-import { Question } from './Question';
+import { type SqlValue } from "sql.js";
+import { type AnkiCollection } from "./AnkiCollection";
+import { type Model } from "./Model";
+import { Question } from "./Question";
 
 export class Card {
-    private readonly id: string;
-    private readonly cardData: Record<string, SqlValue>;
-    private readonly collection: AnkiCollection;
-    private deckId?: string;
-    private noteId?: string;
-    private rawFields?: string;
-    private orderedFields?: string[];
-    private fields?: Record<string, string>;
-    private modelId?: string;
-    private model?: Model;
-    private questions?: Question[];
+  private readonly id: string;
+  private readonly cardData: Record<string, SqlValue>;
+  private readonly collection: AnkiCollection;
+  private deckId?: string;
+  private noteId?: string;
+  private rawFields?: string;
+  private orderedFields?: string[];
+  private fields?: Record<string, string>;
+  private modelId?: string;
+  private model?: Model;
+  private questions?: Question[];
 
-    constructor(id: string, cardData: Record<string, SqlValue>, collection: AnkiCollection) {
-        this.id = id;
-        this.cardData = cardData;
-        this.collection = collection;
+  constructor(id: string, cardData: Record<string, SqlValue>, collection: AnkiCollection) {
+    this.id = id;
+    this.cardData = cardData;
+    this.collection = collection;
+  }
+
+  public getId(): string {
+    return this.id;
+  }
+
+  public getDeckId(): string {
+    if (this.deckId != null) {
+      return this.deckId;
     }
 
-    public getId(): string {
-        return this.id;
+    const result = this.cardData.did?.toString() ?? "";
+    this.deckId = result;
+    return this.deckId;
+  }
+
+  public getNoteId(): string {
+    if (this.noteId != null) {
+      return this.noteId;
     }
 
-    public getDeckId(): string {
-        if (this.deckId != null) {
-            return this.deckId;
-        }
+    const result = this.cardData.nid?.toString() ?? "";
+    this.noteId = result;
+    return this.noteId;
+  }
 
-        const result = this.cardData.did?.toString() ?? '';
-        this.deckId = result;
-        return this.deckId;
+  public getRawFields(): string {
+    if (this.rawFields != null) {
+      return this.rawFields;
     }
 
-    public getNoteId(): string {
-        if (this.noteId != null) {
-            return this.noteId;
-        }
+    const result = this.cardData.flds?.toString() ?? "";
+    this.rawFields = result;
+    return this.rawFields;
+  }
 
-        const result = this.cardData.nid?.toString() ?? '';
-        this.noteId = result;
-        return this.noteId;
+  public getOrderedFields(): string[] {
+    if (this.orderedFields != null) {
+      return [...this.orderedFields];
     }
 
-    public getRawFields(): string {
-        if (this.rawFields != null) {
-            return this.rawFields;
-        }
+    const result = this.getRawFields().split("\x1f");
+    this.orderedFields = result;
+    return [...this.orderedFields];
+  }
 
-        const result = this.cardData.flds?.toString() ?? '';
-        this.rawFields = result;
-        return this.rawFields;
+  public getFields(): Record<string, string> {
+    if (this.fields != null) {
+      return {
+        ...this.fields,
+      };
     }
 
-    public getOrderedFields(): string[] {
-        if (this.orderedFields != null) {
-            return [
-                ...this.orderedFields
-            ];
-        }
+    const model = this.getModel();
+    const orderedFields = this.getOrderedFields();
 
-        const result = this.getRawFields().split('\x1f');
-        this.orderedFields = result;
-        return [
-            ...this.orderedFields
-        ];
+    const result: Record<string, string> = {};
+    for (let i = 0; i < orderedFields.length; i++) {
+      if (i >= model.getFields().length) {
+        break;
+      }
+      result[model.getFields()[i].name] = orderedFields[i];
     }
 
-    public getFields(): Record<string, string> {
-        if (this.fields != null) {
-            return {
-                ...this.fields
-            };
-        }
+    this.fields = result;
+    return {
+      ...this.fields,
+    };
+  }
 
-        const model = this.getModel();
-        const orderedFields = this.getOrderedFields();
+  public getFront(): string {
+    return this.getOrderedFields()[0];
+  }
 
-        const result: Record<string, string> = {};
-        for (let i = 0; i < orderedFields.length; i++) {
-            if (i >= model.getFields().length) {
-                break;
-            }
-            result[model.getFields()[i].name] = orderedFields[i];
-        }
+  public getBack(): string {
+    return this.getOrderedFields()[1];
+  }
 
-        this.fields = result;
-        return {
-            ...this.fields
-        };
+  public getModelId(): string {
+    if (this.modelId != null) {
+      return this.modelId;
     }
 
-    public getFront(): string {
-        return this.getOrderedFields()[0];
+    const result = this.cardData.mid?.toString() ?? "";
+    this.modelId = result;
+    return this.modelId;
+  }
+
+  public getModel(): Model {
+    if (this.model != null) {
+      return this.model;
     }
 
-    public getBack(): string {
-        return this.getOrderedFields()[1];
+    const result = this.collection.getModels()[this.getModelId()];
+    this.model = result;
+    return this.model;
+  }
+
+  public getQuestions(): Question[] {
+    if (this.questions != null) {
+      return [...this.questions];
     }
 
-    public getModelId(): string {
-        if (this.modelId != null) {
-            return this.modelId;
-        }
-
-        const result = this.cardData.mid?.toString() ?? '';
-        this.modelId = result;
-        return this.modelId;
+    const questions: Question[] = [];
+    const model = this.getModel();
+    const fields = this.getFields();
+    for (const template of model.getTemplates()) {
+      const question = new Question(fields, template, model);
+      if (question.getQuestionString() === "") {
+        continue;
+      }
+      questions.push(question);
     }
 
-    public getModel(): Model {
-        if (this.model != null) {
-            return this.model;
-        }
+    this.questions = questions;
+    return [...this.questions];
+  }
 
-        const result = this.collection.getModels()[this.getModelId()];
-        this.model = result;
-        return this.model;
-    }
-
-    public getQuestions(): Question[] {
-        if (this.questions != null) {
-            return [
-                ...this.questions
-            ];
-        }
-
-        const questions: Question[] = [];
-        const model = this.getModel();
-        const fields = this.getFields();
-        for (const template of model.getTemplates()) {
-            const question = new Question(fields, template, model);
-            if (question.getQuestionString() === '') {
-                continue;
-            }
-            questions.push(question);
-        }
-
-        this.questions = questions;
-        return [
-            ...this.questions
-        ];
-    }
-
-    public getRawCard(): any {
-        return this.cardData;
-    }
+  public getRawCard(): any {
+    return this.cardData;
+  }
 }

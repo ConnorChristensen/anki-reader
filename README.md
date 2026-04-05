@@ -10,11 +10,13 @@ A `.apkg` and `.anki2` file reader module. Compatable node, bun, and browser run
 ### Installation
 
 Using npm:
+
 ```
 $ npm install anki-reader
 ```
 
 Using bun:
+
 ```
 $ bun install anki-reader
 ```
@@ -22,6 +24,7 @@ $ bun install anki-reader
 ### Usage
 
 After installation, pass in `.apkg` or `.anki2` files to their reader functions. This returns a collection object, which can be used to retrieve deck and card information. Additionally, if a `.apkg` file is returned, media files are also extracted.
+
 ```js
 import { readAnkiPackage } from 'anki-reader';
 
@@ -45,19 +48,19 @@ readAnkiPackage(ankiFile)
 ```
 
 Alternatively, you can read a collection file directly from a URL with `readFromUrl` like so:
-```js
-import { readFromUrl } from 'anki-reader';
 
-readFromUrl('http://127.0.0.1:8081/collection.anki2')
-  .then((collection) => {
-    const decks = collection.getDecks();
-    for (const [deckId, deck] of Object.entries(decks)) {
-      console.log(deckId, deck.getRawDeck());
-      for (const [cardId, card] of Object.entries(deck.getCards())) {
-        console.log(cardId, card.getRawCard());
-      }
+```js
+import { readFromUrl } from "anki-reader";
+
+readFromUrl("http://127.0.0.1:8081/collection.anki2").then((collection) => {
+  const decks = collection.getDecks();
+  for (const [deckId, deck] of Object.entries(decks)) {
+    console.log(deckId, deck.getRawDeck());
+    for (const [cardId, card] of Object.entries(deck.getCards())) {
+      console.log(cardId, card.getRawCard());
     }
-  })
+  }
+});
 ```
 
 For more in-depth examples, see the [story directory](https://github.com/ewei068/anki-reader/tree/main/story).
@@ -67,6 +70,7 @@ For more in-depth examples, see the [story directory](https://github.com/ewei068
 If you intend to use anki-reader in a browser runtime, you must configure additional settings so `sql.js` can locate the `wasm` file. See the official [sql.js documentation](https://github.com/sql-js/sql.js#examples) and [this React example](https://github.com/sql-js/react-sqljs-demo/tree/master).
 
 **React**
+
 ```js
 // App.js
 import sqlWasm from "!!file-loader?name=sql-wasm-[contenthash].wasm!sql.js/dist/sql-wasm.wasm";
@@ -74,8 +78,8 @@ import sqlWasm from "!!file-loader?name=sql-wasm-[contenthash].wasm!sql.js/dist/
 export default function App() {
   const ankiFile = ...
   readAnkiCollection(ankiFile, {
-    sqlConfig: { 
-      locateFile: () => sqlWasm 
+    sqlConfig: {
+      locateFile: () => sqlWasm
     },
   }
 

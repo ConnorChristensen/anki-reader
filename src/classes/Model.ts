@@ -1,115 +1,107 @@
 export interface IModelField {
-    name: string
-    ord: number
-    font: string
-    size: number
-    sticky: boolean
+  name: string;
+  ord: number;
+  font: string;
+  size: number;
+  sticky: boolean;
 }
 
 export interface IModelTemplate {
-    afmt: string
-    bafmt: string
-    bqfmt: string
-    did?: number
-    name: string
-    ord: number
-    qfmt: string
+  afmt: string;
+  bafmt: string;
+  bqfmt: string;
+  did?: number;
+  name: string;
+  ord: number;
+  qfmt: string;
 }
 
 export class Model {
-    private readonly id: string;
-    private readonly modelJson: any;
-    private css?: string;
-    private flds?: IModelField[];
-    private latexPre?: string;
-    private latexPost?: string;
-    private name?: string;
-    private type?: number;
-    private tmpls?: IModelTemplate[];
+  private readonly id: string;
+  private readonly modelJson: any;
+  private css?: string;
+  private flds?: IModelField[];
+  private latexPre?: string;
+  private latexPost?: string;
+  private name?: string;
+  private type?: number;
+  private tmpls?: IModelTemplate[];
 
-    constructor(id: string, modelJson: any) {
-        this.id = id;
-        this.modelJson = modelJson;
+  constructor(id: string, modelJson: any) {
+    this.id = id;
+    this.modelJson = modelJson;
+  }
+
+  public getId(): string {
+    return this.id;
+  }
+
+  public getCss(): string {
+    if (this.css != null) {
+      return this.css;
     }
 
-    public getId(): string {
-        return this.id;
+    this.css = this.modelJson.css ?? "";
+    return this.css ?? "";
+  }
+
+  public getFields(): IModelField[] {
+    if (this.flds != null) {
+      return [...this.flds];
     }
 
-    public getCss(): string {
-        if (this.css != null) {
-            return this.css;
-        }
+    this.flds = this.modelJson.flds ?? [];
+    return [...(this.flds ?? [])];
+  }
 
-        this.css = this.modelJson.css ?? '';
-        return this.css ?? '';
+  public getLatexPre(): string {
+    if (this.latexPre != null) {
+      return this.latexPre;
     }
 
-    public getFields(): IModelField[] {
-        if (this.flds != null) {
-            return [
-                ...this.flds
-            ];
-        }
+    this.latexPre = this.modelJson.latexPre ?? "";
+    return this.latexPre ?? "";
+  }
 
-        this.flds = this.modelJson.flds ?? [];
-        return [
-            ...this.flds ?? []
-        ];
+  public getLatexPost(): string {
+    if (this.latexPost != null) {
+      return this.latexPost;
     }
 
-    public getLatexPre(): string {
-        if (this.latexPre != null) {
-            return this.latexPre;
-        }
+    this.latexPost = this.modelJson.latexPost ?? "";
+    return this.latexPost ?? "";
+  }
 
-        this.latexPre = this.modelJson.latexPre ?? '';
-        return this.latexPre ?? '';
+  public getName(): string {
+    if (this.name != null) {
+      return this.name;
     }
 
-    public getLatexPost(): string {
-        if (this.latexPost != null) {
-            return this.latexPost;
-        }
+    this.name = this.modelJson.name ?? "";
+    return this.name ?? "";
+  }
 
-        this.latexPost = this.modelJson.latexPost ?? '';
-        return this.latexPost ?? '';
+  public getType(): number {
+    if (this.type != null) {
+      return this.type;
     }
 
-    public getName(): string {
-        if (this.name != null) {
-            return this.name;
-        }
+    this.type = this.modelJson.type ?? 0;
+    return this.type ?? 0;
+  }
 
-        this.name = this.modelJson.name ?? '';
-        return this.name ?? '';
+  public getTemplates(): IModelTemplate[] {
+    if (this.tmpls != null) {
+      return [...this.tmpls];
     }
 
-    public getType(): number {
-        if (this.type != null) {
-            return this.type;
-        }
+    this.tmpls = this.modelJson.tmpls ?? [];
+    return [...(this.tmpls ?? [])];
+  }
 
-        this.type = this.modelJson.type ?? 0;
-        return this.type ?? 0;
-    }
-
-    public getTemplates(): IModelTemplate[] {
-        if (this.tmpls != null) {
-            return [
-                ...this.tmpls
-            ];
-        }
-
-        this.tmpls = this.modelJson.tmpls ?? [];
-        return [
-            ...this.tmpls ?? []
-        ];
-    }
-
-    public getRawModel(): any {
-        return {
-            ...this.modelJson
-        };
-    }
+  public getRawModel(): any {
+    return {
+      ...this.modelJson,
+    };
+  }
 }
