@@ -1,3 +1,4 @@
+/* eslint-disable */
 import "web-streams-polyfill"; // Polyfill TransformStream globally
 import "isomorphic-fetch"; // Polyfill fetch globally
 import { Blob } from "blob-polyfill"; // Polyfill Blob globally

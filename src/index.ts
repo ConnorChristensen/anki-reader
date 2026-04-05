@@ -1,7 +1,11 @@
 import initSqlJs from "sql.js";
-import fetch from "node-fetch";
 import { AnkiCollection } from "./classes/AnkiCollection";
+import { Card } from "./classes/Card";
+import { Deck } from "./classes/Deck";
+import { Model } from "./classes/Model";
 import * as zip from "@zip.js/zip.js";
+
+export type { AnkiCollection, Card, Deck, Model };
 
 interface IOptions {
   sqlConfig?: Partial<EmscriptenModule>;
@@ -43,10 +47,14 @@ export async function readFromUrl(url: string, options?: IOptions): Promise<Anki
   return collection;
 }
 
+function isFileEntry(entry: zip.Entry): entry is zip.FileEntry {
+  return entry.directory === false;
+}
+
 async function readMedia(entries: zip.Entry[]): Promise<Record<string, Blob>> {
   const media: Record<string, Blob> = {};
   const mediaMap = entries.find((entry) => entry.filename === "media");
-  if (mediaMap?.getData == null) {
+  if (mediaMap == null || !isFileEntry(mediaMap)) {
     console.warn("Could not find media map in Anki package");
     return media;
   }
@@ -57,7 +65,7 @@ async function readMedia(entries: zip.Entry[]): Promise<Record<string, Blob>> {
     const mediaMapJson = JSON.parse(mediaMapString);
     for (const [key, value] of Object.entries(mediaMapJson)) {
       const mediaEntry = entries.find((entry) => entry.filename === key);
-      if (mediaEntry?.getData == null) {
+      if (mediaEntry == null || !isFileEntry(mediaEntry)) {
         continue;
       }
 
@@ -80,7 +88,7 @@ export async function readAnkiPackage(
   const reader = new zip.ZipReader(new zip.BlobReader(ankiPackage));
   return await reader.getEntries().then(async (entries) => {
     const collectionEntry = entries.find((entry) => entry.filename === "collection.anki2");
-    if (collectionEntry?.getData == null) {
+    if (collectionEntry == null || !isFileEntry(collectionEntry)) {
       throw new Error("Could not find collection.anki2 in Anki package");
     }
 
@@ -102,7 +110,7 @@ export async function readAnkiPackageFromUrl(
   const reader = new zip.ZipReader(new zip.HttpReader(url));
   return await reader.getEntries().then(async (entries) => {
     const collectionEntry = entries.find((entry) => entry.filename === "collection.anki2");
-    if (collectionEntry?.getData == null) {
+    if (collectionEntry == null || !isFileEntry(collectionEntry)) {
       throw new Error("Could not find collection.anki2 in Anki package");
     }
 

@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { readFromUrl } from "../src/index";
 
 readFromUrl("http://127.0.0.1:8081/Amino_Acid_Flashcards/collection.anki2").then((collection) => {
