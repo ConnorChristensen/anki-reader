@@ -31,7 +31,7 @@ export class AnkiCollection {
       return {};
     }
 
-    const deckJsons: Record<string, any> = JSON.parse(result[0].values[0][0]?.toString() ?? "{}");
+    const deckJsons: Record<string, any> = JSON.parse(result[0]!.values[0]![0]?.toString() ?? "{}");
     const decks: Record<string, any> = {};
     for (const [deckId, deckJson] of Object.entries(deckJsons)) {
       decks[deckId] = new Deck(deckId, deckJson, this);
@@ -53,7 +53,7 @@ export class AnkiCollection {
       return this.crt;
     }
 
-    const crt = result[0].values[0][0];
+    const crt = result[0]!.values[0]![0];
     // multiply by 1000 to convert seconds to milliseconds (only for crt)
     this.crt = typeof crt === "number" ? new Date(crt * 1000) : new Date();
     return this.crt;
@@ -70,7 +70,7 @@ export class AnkiCollection {
       return this.mod;
     }
 
-    const mod = result[0].values[0][0];
+    const mod = result[0]!.values[0]![0];
     this.mod = typeof mod === "number" ? new Date(mod) : new Date();
     return this.mod;
   }
@@ -86,7 +86,7 @@ export class AnkiCollection {
       return this.scm;
     }
 
-    const scm = result[0].values[0][0];
+    const scm = result[0]!.values[0]![0];
     this.scm = typeof scm === "number" ? new Date(scm) : new Date();
     return this.scm;
   }
@@ -102,7 +102,7 @@ export class AnkiCollection {
       return this.version;
     }
 
-    const ver = result[0].values[0][0];
+    const ver = result[0]!.values[0]![0];
     this.version = typeof ver === "number" ? ver : 0;
     return this.version;
   }
@@ -120,7 +120,7 @@ export class AnkiCollection {
       return {};
     }
 
-    const config = JSON.parse(result[0].values[0][0]?.toString() ?? "{}");
+    const config = JSON.parse(result[0]!.values[0]![0]?.toString() ?? "{}");
     this.config = config;
     return {
       ...this.config,
@@ -140,7 +140,7 @@ export class AnkiCollection {
       return {};
     }
 
-    const modelJsons = JSON.parse(result[0].values[0][0]?.toString() ?? "{}");
+    const modelJsons = JSON.parse(result[0]!.values[0]![0]?.toString() ?? "{}");
     const models: Record<string, Model> = {};
     for (const [modelId, modelJson] of Object.entries(modelJsons)) {
       models[modelId] = new Model(modelId, modelJson);
@@ -167,7 +167,7 @@ export class AnkiCollection {
       };
     }
 
-    const dconf = JSON.parse(result[0].values[0][0]?.toString() ?? "{}");
+    const dconf = JSON.parse(result[0]!.values[0]![0]?.toString() ?? "{}");
     this.dconf = dconf;
     return {
       ...this.dconf,
@@ -189,7 +189,7 @@ export class AnkiCollection {
       };
     }
 
-    const tags = JSON.parse(result[0].values[0][0]?.toString() ?? "{}");
+    const tags = JSON.parse(result[0]!.values[0]![0]?.toString() ?? "{}");
     this.tags = tags;
     return {
       ...this.tags,

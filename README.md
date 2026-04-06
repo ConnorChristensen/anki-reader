@@ -63,8 +63,6 @@ readFromUrl("http://127.0.0.1:8081/collection.anki2").then((collection) => {
 });
 ```
 
-For more in-depth examples, see the [story directory](https://github.com/ewei068/anki-reader/tree/main/story).
-
 ### Browser
 
 If you intend to use anki-reader in a browser runtime, you must configure additional settings so `sql.js` can locate the `wasm` file. See the official [sql.js documentation](https://github.com/sql-js/sql.js#examples) and [this React example](https://github.com/sql-js/react-sqljs-demo/tree/master).
@@ -112,22 +110,6 @@ Anki collections are stored as sqlite databases, which is what anki-reader queri
 
 This package also provides methods to get the raw database objects or models. For example, `AnkiCollection.getRawCollection()` may be used to get the raw collection database, and can then use the `sql.js` API to query.
 
-## Development (WIP)
+## Development
 
-To install dependencies:
-
-```bash
-bun install
-```
-
-To run:
-
-Refer to `story/README.md`
-
-To build typescript:
-
-```bash
-npm run build
-```
-
-This project was created using `bun init` in bun v1.0.7. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.
+Run the command `vp` to launch vite plus and see all script options.

@@ -30,9 +30,10 @@
     "sql.js": "^1.14.1"
   },
   "devDependencies": {
+    "@types/bun": "^1.3.11",
+    "@types/node": "^25.5.2",
     "@types/sql.js": "^1.4.11",
     "blob-polyfill": "^9.0.20240710",
-    "bun-types": "latest",
     "isomorphic-fetch": "^3.0.0",
     "typescript": "^6.0.2",
     "vite-plus": "latest",

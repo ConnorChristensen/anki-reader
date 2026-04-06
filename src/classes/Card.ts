@@ -81,7 +81,7 @@ export class Card {
       if (i >= model.getFields().length) {
         break;
       }
-      result[model.getFields()[i].name] = orderedFields[i];
+      result[model.getFields()[i]!.name] = orderedFields[i]!;
     }
 
     this.fields = result;
@@ -91,11 +91,11 @@ export class Card {
   }
 
   public getFront(): string {
-    return this.getOrderedFields()[0];
+    return this.getOrderedFields()[0]!;
   }
 
   public getBack(): string {
-    return this.getOrderedFields()[1];
+    return this.getOrderedFields()[1]!;
   }
 
   public getModelId(): string {
@@ -115,7 +115,7 @@ export class Card {
 
     const result = this.collection.getModels()[this.getModelId()];
     this.model = result;
-    return this.model;
+    return this.model!;
   }
 
   public getQuestions(): Question[] {

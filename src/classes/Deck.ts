@@ -41,11 +41,11 @@ export class Deck {
     }
 
     const cards: Record<string, Card> = {};
-    for (const card of result[0].values) {
+    for (const card of result[0]!.values) {
       // match columns to card data
       const cardData: Record<string, SqlValue> = {};
-      for (let i = 0; i < result[0].columns.length; i++) {
-        cardData[result[0].columns[i]] = card[i];
+      for (let i = 0; i < result[0]!.columns.length; i++) {
+        cardData[result[0]!.columns[i]!] = card[i]!;
       }
       const id = cardData.id?.toString() ?? "";
 
